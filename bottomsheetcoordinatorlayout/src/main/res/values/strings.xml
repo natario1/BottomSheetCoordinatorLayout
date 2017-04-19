@@ -1,0 +1,4 @@
+<resources>
+    <string translatable="false" name="bottom_sheet_insets_behavior">com.otaliastudios.bottomsheetcoordinatorlayout.BottomSheetInsetsBehavior</string>
+    <string translatable="false" name="bottom_sheet_coordinator_behavior">com.otaliastudios.bottomsheetcoordinatorlayout.BottomSheetCoordinatorBehavior</string>
+</resources>
