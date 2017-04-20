@@ -18,11 +18,12 @@ import java.lang.reflect.Field;
 
 /**
  * This:
- * - tries to fix the hideable bug, https://code.google.com/p/android/issues/detail?id=207191&thanks=207191&ts=1460894786
+ * - tries to fix the hideable bug
  * - ensures that any inset is passed to our bottom sheet view before it is consumed by some other.
  *
  * @param <V> bottom sheet root view, typically {@link BottomSheetCoordinatorLayout}
  */
+// link to bug https://code.google.com/p/android/issues/detail?id=207191&thanks=207191&ts=1460894786
 public class BottomSheetInsetsBehavior<V extends View> extends BottomSheetBehavior<V> {
     private final static String TAG = BottomSheetInsetsBehavior.class.getSimpleName();
 
