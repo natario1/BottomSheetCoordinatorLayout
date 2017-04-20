@@ -1,8 +1,3 @@
-<manifest package="com.otaliastudios.bottomsheetcoordinatorlayout"
-          xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <application android:allowBackup="true"
-                 android:label="BottomSheetCoordinatorLayout"
-                 android:supportsRtl="true"/>
-
+<manifest package="com.otaliastudios.bottomsheetcoordinatorlayout">
+    <application/>
 </manifest>
