@@ -45,7 +45,7 @@ install {
 
             packaging 'aar'
             groupId project.group
-            artifactId 'elements'
+            artifactId 'bottomsheetcoordinatorlayout'
             version project.version
 
             licenses {
