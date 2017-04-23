@@ -1,3 +1,4 @@
+<!-- markdown-preview README.md -->
 # BottomSheetCoordinatorLayout
 
 ```groovy
@@ -5,6 +6,10 @@ compile 'com.otaliastudios:bottomsheetcoordinatorlayout:1.0.0'
 ```
 
 A handy `CoordinatorLayout` that works well when used in a bottom sheet, even with `AppBarLayout`s inside.
+
+<p align="center">
+  <img src="art/bottom1.gif" width="250" vspace="20">
+</p>
 
 ## Usage
 
