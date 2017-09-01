@@ -2,7 +2,7 @@
 # BottomSheetCoordinatorLayout
 
 ```groovy
-compile 'com.otaliastudios:bottomsheetcoordinatorlayout:1.0.0'
+compile 'com.otaliastudios:bottomsheetcoordinatorlayout:1.0.1'
 ```
 
 A handy `CoordinatorLayout` that works well when used in a bottom sheet, even with `AppBarLayout`s inside.
