@@ -3,8 +3,11 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 // Required by bintray
-version = '1.0.1'
+// archivesBaseName is required if artifactId is different from gradle module name
+// or you can add baseName to each archive task (sources, javadoc, aar)
+version = '1.0.2'
 group = 'com.otaliastudios'
+archivesBaseName = 'bottomsheetcoordinatorlayout'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -28,11 +31,8 @@ android {
 }
 
 dependencies {
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile "com.android.support:design:$supportLibVersion"
-    testCompile 'junit:junit:4.12'
+    implementation "com.android.support:design:$supportLibVersion"
+    testImplementation 'junit:junit:4.12'
 }
 
 install {
