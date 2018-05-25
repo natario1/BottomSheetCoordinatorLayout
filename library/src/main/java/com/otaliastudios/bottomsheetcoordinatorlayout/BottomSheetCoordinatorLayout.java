@@ -7,10 +7,14 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ScrollView;
 
 /**
  * A hacky {@link CoordinatorLayout} that can act as a bottom sheet through
@@ -32,8 +36,12 @@ public final class BottomSheetCoordinatorLayout extends CoordinatorLayout implem
 
     private BottomSheetCoordinatorBehavior bottomSheetBehavior;
     private BottomSheetBehavior.BottomSheetCallback delayedBottomSheetCallback;
+    private Boolean delayedHideable;
+    private Boolean delayedSkipCollapsed;
+    private Integer delayedState;
     private AppBarLayout.Behavior appBarBehavior;
-    private int appBarOffset = -1;
+    private int appBarOffset = 0;
+    private boolean hasAppBar = false;
 
     public BottomSheetCoordinatorLayout(Context context) {
         super(context); i();
@@ -55,7 +63,7 @@ public final class BottomSheetCoordinatorLayout extends CoordinatorLayout implem
         // before any other view.
         ViewCompat.setElevation(dummyView, ViewCompat.getElevation(this));
         // Make sure it does not fit windows, or it will consume insets before the AppBarLayout.
-        ViewCompat.setFitsSystemWindows(dummyView, false);
+        dummyView.setFitsSystemWindows(false);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         params.setBehavior(dummyBehavior);
@@ -78,6 +86,18 @@ public final class BottomSheetCoordinatorLayout extends CoordinatorLayout implem
             bottomSheetBehavior.setBottomSheetCallback(delayedBottomSheetCallback);
             delayedBottomSheetCallback = null;
         }
+        if (delayedSkipCollapsed != null) {
+            bottomSheetBehavior.setSkipCollapsed(delayedSkipCollapsed);
+            delayedSkipCollapsed = null;
+        }
+        if (delayedHideable != null) {
+            bottomSheetBehavior.setHideable(delayedHideable);
+            delayedHideable = null;
+        }
+        if (delayedState != null) { // This must be the last.
+            bottomSheetBehavior.setState(delayedState);
+            delayedState = null;
+        }
 
         // Store AppBar's Behavior, and allow drag events on it.
         AppBarLayout appBarLayout = findAppBar();
@@ -90,6 +110,9 @@ public final class BottomSheetCoordinatorLayout extends CoordinatorLayout implem
                     return true;
                 }
             });
+            hasAppBar = true;
+        } else {
+            hasAppBar = false;
         }
     }
 
@@ -104,6 +127,45 @@ public final class BottomSheetCoordinatorLayout extends CoordinatorLayout implem
             delayedBottomSheetCallback = bottomSheetCallback;
         } else {
             bottomSheetBehavior.setBottomSheetCallback(bottomSheetCallback);
+        }
+    }
+
+    /**
+     * Set the hideable flag to our behavior, as soon as it is available.
+     *
+     * @param hideable whether it will be hideable
+     */
+    public void setHideable(boolean hideable) {
+        if (bottomSheetBehavior == null) {
+            delayedHideable = hideable;
+        } else {
+            bottomSheetBehavior.setHideable(hideable);
+        }
+    }
+
+    /**
+     * Set the skipCollapsed flag to our behavior, as soon as it is available.
+     *
+     * @param skipCollapsed whether to skip the collapsed state
+     */
+    public void setSkipCollapsed(boolean skipCollapsed) {
+        if (bottomSheetBehavior == null) {
+            delayedSkipCollapsed = skipCollapsed;
+        } else {
+            bottomSheetBehavior.setSkipCollapsed(skipCollapsed);
+        }
+    }
+
+    /**
+     * Set the state to our behavior, as soon as it is available.
+     *
+     * @param state the new state
+     */
+    public void setState(int state) {
+        if (bottomSheetBehavior == null) {
+            delayedState = state;
+        } else {
+            bottomSheetBehavior.setState(state);
         }
     }
 
@@ -131,12 +193,14 @@ public final class BottomSheetCoordinatorLayout extends CoordinatorLayout implem
         return null;
     }
 
-    int getState() {
+    /**
+     * Returns the current sheet behavior state, or -1 if the behavior
+     * is not available yet.
+     *
+     * @return the current state.
+     */
+    public int getState() {
         return bottomSheetBehavior != null ? bottomSheetBehavior.getState() : -1;
-    }
-
-    int getAppBarOffset() {
-        return appBarOffset;
     }
 
     @Override
@@ -151,6 +215,22 @@ public final class BottomSheetCoordinatorLayout extends CoordinatorLayout implem
             // we are trying to set a new offset, and sheet is expanded. Keep track of it.
             appBarOffset = verticalOffset;
         }
+    }
+
+    /**
+     * If we have an app bar, we can simply use the appBarOffset.
+     * If we have no app bar... TODO
+     */
+    boolean canScrollUp() {
+        if (hasAppBar) {
+            return appBarOffset != 0;
+        } else {
+            return true;
+        }
+    }
+
+    boolean hasAppBar() {
+        return hasAppBar;
     }
 
     /**
@@ -184,7 +264,7 @@ public final class BottomSheetCoordinatorLayout extends CoordinatorLayout implem
                 case BottomSheetCoordinatorBehavior.STATE_EXPANDED:
                     // If sheet is expanded, we only want to forward if the appBar is expanded.
                     // AND the touch is going down...
-                    return sheet.getAppBarOffset() == 0 && !fingerGoingUp;
+                    return !sheet.canScrollUp() && !fingerGoingUp;
                 case BottomSheetCoordinatorBehavior.STATE_COLLAPSED:
                 case BottomSheetCoordinatorBehavior.STATE_DRAGGING:
                 case BottomSheetCoordinatorBehavior.STATE_SETTLING:
@@ -198,8 +278,7 @@ public final class BottomSheetCoordinatorLayout extends CoordinatorLayout implem
         public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, DummyView child, View directTargetChild, View target, int nestedScrollAxes) {
             BottomSheetCoordinatorLayout sheet = (BottomSheetCoordinatorLayout) coordinatorLayout;
             if (shouldForwardEvent(sheet, false)) {
-                return sheet.getBehavior().onStartNestedScroll(coordinatorLayout,
-                        sheet, directTargetChild, target, nestedScrollAxes);
+                return sheet.getBehavior().onStartNestedScroll(coordinatorLayout, sheet, directTargetChild, target, nestedScrollAxes);
             } else {
                 return false;
             }
