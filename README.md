@@ -2,7 +2,7 @@
 # BottomSheetCoordinatorLayout
 
 ```groovy
-implementation 'com.otaliastudios:bottomsheetcoordinatorlayout:1.0.2'
+implementation 'com.otaliastudios:bottomsheetcoordinatorlayout:1.0.3'
 ```
 
 A handy `CoordinatorLayout` that works well when used in a bottom sheet, even with `AppBarLayout`s inside.
@@ -34,7 +34,8 @@ so wait for that.
 
 If you just want to set appropriate `BottomSheetCallback`, you can use `bscl.setBottomSheetCallback()`.
 Callbacks will be added to the sheet behavior as soon as it is available, so this can be called safely
-whenever you want.
+whenever you want. Same goes for other set() methods: they will apply the result to the behavior as soon
+as it is available.
 
 ## Contributing
 

@@ -40,12 +40,14 @@ public class BottomSheetCoordinatorBehavior extends BottomSheetInsetsBehavior<Bo
 
     @Override
     public boolean onTouchEvent(CoordinatorLayout parent, BottomSheetCoordinatorLayout sheet, MotionEvent event) {
+        if (!sheet.hasAppBar()) return super.onInterceptTouchEvent(parent, sheet, event);
+
         // If the touch is not on the sheet, we don't care.
         if (!parent.isPointInChildBounds(sheet, (int) event.getX(), (int) event.getY())) {
             return super.onInterceptTouchEvent(parent, sheet, event);
         }
         updateDirection(event);
-        if (sheet.getState() == BottomSheetCoordinatorBehavior.STATE_EXPANDED && sheet.getAppBarOffset() == 0 && !fingerDown) {
+        if (sheet.getState() == BottomSheetCoordinatorBehavior.STATE_EXPANDED && !sheet.canScrollUp() && !fingerDown) {
             // Release this. Doesn't work well because BottomSheetBehavior keeps being STATE_DRAGGING
             // even when we reached full height, as long as we keep the finger there.
             return false;
@@ -55,6 +57,8 @@ public class BottomSheetCoordinatorBehavior extends BottomSheetInsetsBehavior<Bo
 
     @Override
     public boolean onInterceptTouchEvent(CoordinatorLayout parent, BottomSheetCoordinatorLayout sheet, MotionEvent event) {
+        if (!sheet.hasAppBar()) return super.onInterceptTouchEvent(parent, sheet, event);
+
         // If the touch is not on the sheet, we don't care.
         if (!parent.isPointInChildBounds(sheet, (int) event.getX(), (int) event.getY())) {
             return super.onInterceptTouchEvent(parent, sheet, event);
@@ -63,8 +67,8 @@ public class BottomSheetCoordinatorBehavior extends BottomSheetInsetsBehavior<Bo
         updateDirection(event);
         if (sheet.getState() == BottomSheetCoordinatorBehavior.STATE_EXPANDED) {
             // If finger is going down and
-            if (sheet.getAppBarOffset() == 0) {
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+            if (!sheet.canScrollUp()) {
+                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
                     // Pass to both, we don't know yet what will happen.
                     super.onInterceptTouchEvent(parent, sheet, event);
                     return false;
@@ -92,7 +96,7 @@ public class BottomSheetCoordinatorBehavior extends BottomSheetInsetsBehavior<Bo
             fingerDown = false;
             return;
         }
-        switch (MotionEventCompat.getActionMasked(event)) {
+        switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 fingerDown = false;
                 lastY = event.getY();
