@@ -40,11 +40,11 @@ public class BottomSheetCoordinatorBehavior extends BottomSheetInsetsBehavior<Bo
 
     @Override
     public boolean onTouchEvent(CoordinatorLayout parent, BottomSheetCoordinatorLayout sheet, MotionEvent event) {
-        if (!sheet.hasAppBar()) return super.onInterceptTouchEvent(parent, sheet, event);
+        if (!sheet.hasAppBar()) return super.onTouchEvent(parent, sheet, event);
 
         // If the touch is not on the sheet, we don't care.
         if (!parent.isPointInChildBounds(sheet, (int) event.getX(), (int) event.getY())) {
-            return super.onInterceptTouchEvent(parent, sheet, event);
+            return super.onTouchEvent(parent, sheet, event);
         }
         updateDirection(event);
         if (sheet.getState() == BottomSheetCoordinatorBehavior.STATE_EXPANDED && !sheet.canScrollUp() && !fingerDown) {

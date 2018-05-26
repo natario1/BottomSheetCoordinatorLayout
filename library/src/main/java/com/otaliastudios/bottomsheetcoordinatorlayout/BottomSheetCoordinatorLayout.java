@@ -29,7 +29,6 @@ import android.widget.ScrollView;
  */
 @CoordinatorLayout.DefaultBehavior(BottomSheetCoordinatorBehavior.class)
 public final class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
-        ViewTreeObserver.OnGlobalLayoutListener,
         AppBarLayout.OnOffsetChangedListener {
 
     private static final String TAG = BottomSheetCoordinatorLayout.class.getSimpleName();
@@ -68,17 +67,21 @@ public final class BottomSheetCoordinatorLayout extends CoordinatorLayout implem
                 ViewGroup.LayoutParams.MATCH_PARENT);
         params.setBehavior(dummyBehavior);
         addView(dummyView, params);
-        // Wait to get our own behavior.
-        getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 
+    /**
+     * Based on Coordinator source, this seems to be the earliest point where we can be sure
+     * that we have a behavior.
+     * We might be tempted to use onAttachedToWindow but that only works if the behavior was
+     * declared through XML.
+     *
+     * @param widthMeasureSpec width spec
+     * @param heightMeasureSpec height spec
+     */
     @Override
-    public void onGlobalLayout() {
-        if (Build.VERSION.SDK_INT >= 16) {
-            getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        } else {
-            getViewTreeObserver().removeGlobalOnLayoutListener(this);
-        }
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (bottomSheetBehavior != null) return;
 
         // Fetch our own behavior.
         bottomSheetBehavior = BottomSheetCoordinatorBehavior.from(BottomSheetCoordinatorLayout.this);
