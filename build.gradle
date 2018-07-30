@@ -6,11 +6,11 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.2'
+        classpath 'com.android.tools.build:gradle:3.2.0-beta04'
         // https://inthecheesefactory.com/blog/how-to-upload-library-to-jcenter-maven-central-as-dependency/en
         // https://www.theguardian.com/technology/developer-blog/2016/dec/06/how-to-publish-an-android-library-a-mysterious-conversation
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
     }
 }
 
@@ -23,11 +23,11 @@ allprojects {
 
 ext {
     // Updating: check travis
-    compileSdkVersion = 27
-    buildToolsVersion = "27.0.3"
-    supportLibVersion = '27.1.0'
+    compileSdkVersion = 28
+    buildToolsVersion = "28.0.0"
+    supportLibVersion = '28.0.0-beta01'
     minSdkVersion = 14
-    targetSdkVersion = 27
+    targetSdkVersion = 28
 }
 
 task clean(type: Delete) {

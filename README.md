@@ -11,6 +11,8 @@ A handy `CoordinatorLayout` that works well when used in a bottom sheet, even wi
   <img src="art/bottom1.gif" width="250" vspace="20">
 </p>
 
+*Having issues with android.support v28? Please try `com.otaliastudios:bottomsheetcoordinatorlayout:1.1.0-RC1`.*
+
 ## Usage
 
 Just use `BottomSheetCoordinatorLayout` as the root view of your bottom sheet. It will be automatically
