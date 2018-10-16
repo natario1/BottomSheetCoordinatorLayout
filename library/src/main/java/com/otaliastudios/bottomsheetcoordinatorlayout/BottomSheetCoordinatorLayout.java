@@ -28,7 +28,7 @@ import android.widget.ScrollView;
  * for window insets and app bar layout dragging.
  */
 @CoordinatorLayout.DefaultBehavior(BottomSheetCoordinatorBehavior.class)
-public final class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
+public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
         AppBarLayout.OnOffsetChangedListener {
 
     private static final String TAG = BottomSheetCoordinatorLayout.class.getSimpleName();
