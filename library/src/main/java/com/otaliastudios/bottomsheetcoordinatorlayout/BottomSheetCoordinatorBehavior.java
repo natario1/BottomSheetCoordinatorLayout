@@ -1,21 +1,21 @@
 package com.otaliastudios.bottomsheetcoordinatorlayout;
 
 import android.content.Context;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
 /**
- * This {@code Behavior} allows {@link android.support.design.widget.AppBarLayout} to accept drag events.
- *
- * When {@code AppBarLayout} stands inside a {@link android.support.design.widget.BottomSheetBehavior},
+ * This {@code Behavior} allows {@link com.google.android.material.appbar.AppBarLayout} to accept drag events.
+ * <p>
+ * When {@code AppBarLayout} stands inside a {@link com.google.android.material.bottomsheet.BottomSheetBehavior},
  * all touch events are stolen by the behavior, unless they focus on the nested scrolling child
  * (which the app bar isn't). (see BottomSheetBehavior.onInterceptTouchEvent, last line).
- *
- * Since no event goes to app bar, its own {@link android.support.design.widget.AppBarLayout.Behavior}
+ * <p>
+ * Since no event goes to app bar, its own {@link com.google.android.material.appbar.AppBarLayout.Behavior}
  * cannot control drags on the view itself. We have to take care of this.
- *
+ * <p>
  * A simple implementation for this touch policy could be just returning false when sheet is expanded,
  * so that {@code AppBarLayout} can catch the event.
  * Unfortunately, this is not enough, because if sheet is expanded **and** app bar is expanded

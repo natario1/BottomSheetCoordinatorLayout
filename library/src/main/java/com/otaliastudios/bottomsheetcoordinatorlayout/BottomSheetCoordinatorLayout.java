@@ -1,29 +1,26 @@
 package com.otaliastudios.bottomsheetcoordinatorlayout;
 
 import android.content.Context;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetBehavior;import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.ScrollView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.ViewCompat;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 /**
  * A hacky {@link CoordinatorLayout} that can act as a bottom sheet through
  * {@link BottomSheetBehavior}.
- *
+ * <p>
  * This works by *not* reinventing the wheel and reusing the same nested scrolling logic implemented
  * by behaviors. There is a dummy view inside the sheet that is capable of getting nested scrolling
  * callbacks, and forward them to the *outer* behavior that they normally would never reach.
- *
+ * <p>
  * Default behavior is {@link BottomSheetCoordinatorBehavior}, Which includes some workarounds
  * for window insets and app bar layout dragging.
  */
@@ -43,15 +40,18 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
     private boolean hasAppBar = false;
 
     public BottomSheetCoordinatorLayout(Context context) {
-        super(context); i();
+        super(context);
+        i();
     }
 
     public BottomSheetCoordinatorLayout(Context context, AttributeSet attrs) {
-        super(context, attrs); i();
+        super(context, attrs);
+        i();
     }
 
     public BottomSheetCoordinatorLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr); i();
+        super(context, attrs, defStyleAttr);
+        i();
     }
 
     private void i() {
@@ -75,7 +75,7 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
      * We might be tempted to use onAttachedToWindow but that only works if the behavior was
      * declared through XML.
      *
-     * @param widthMeasureSpec width spec
+     * @param widthMeasureSpec  width spec
      * @param heightMeasureSpec height spec
      */
     @Override
@@ -120,7 +120,7 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
     }
 
     /**
-     * Set a {@link android.support.design.widget.BottomSheetBehavior.BottomSheetCallback} callback
+     * Set a {@link com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback} callback
      * to our behavior, as soon as it is available.
      *
      * @param bottomSheetCallback desired callback.
@@ -174,6 +174,7 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
 
     /**
      * Returns our behavior, if available.
+     *
      * @return our behavior, or null if not available yet.
      */
     @Nullable
@@ -183,6 +184,7 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
 
     /**
      * Returns an {@link AppBarLayout} if present.
+     *
      * @return the first available AppBarLayout, or null.
      */
     @Nullable
@@ -241,12 +243,12 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
      * Through this behavior the dummy view can listen to touch/scroll events.
      * Our goal is to propagate them to the sheet behavior (the BottomSheetBehavior
      * that controls the bottom sheet position),
-     *
+     * <p>
      * It has to be done manually because nested scrolls/fling events are coordinated by coordinator
      * layouts. If the bottom sheet view does not support nested scrolling (and CoordinatorLayout doesn't)
      * any event that takes place inside the sheet is confined to sheet itself.
      * This way inner events never reach the BottomSheetBehavior.
-     *
+     * <p>
      * Another option would be to make a CoordinatorLayout class that actually implements
      * NestedScrollingChild and thus propagates events to the outer CoordinatorLayout: this, then,
      * could propagate the events to BottomSheetBehavior. I was not able to make that work.
@@ -255,7 +257,8 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
      */
     private static class DummyBehavior<DummyView extends View> extends CoordinatorLayout.Behavior<DummyView> {
 
-        public DummyBehavior() {}
+        public DummyBehavior() {
+        }
 
         public DummyBehavior(Context context, AttributeSet attrs) {
             super(context, attrs);
@@ -268,6 +271,7 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
                     // If sheet is expanded, we only want to forward if the appBar is expanded.
                     // AND the touch is going down...
                     return !sheet.canScrollUp() && !fingerGoingUp;
+                case BottomSheetCoordinatorBehavior.STATE_HALF_EXPANDED:
                 case BottomSheetCoordinatorBehavior.STATE_COLLAPSED:
                 case BottomSheetCoordinatorBehavior.STATE_DRAGGING:
                 case BottomSheetCoordinatorBehavior.STATE_SETTLING:
@@ -278,40 +282,43 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
         }
 
         @Override
-        public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, DummyView child, View directTargetChild, View target, int nestedScrollAxes) {
+        public boolean onStartNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull DummyView child, @NonNull View directTargetChild, @NonNull View target, int axes, int type) {
             BottomSheetCoordinatorLayout sheet = (BottomSheetCoordinatorLayout) coordinatorLayout;
             if (shouldForwardEvent(sheet, false)) {
-                return sheet.getBehavior().onStartNestedScroll(coordinatorLayout, sheet, directTargetChild, target, nestedScrollAxes);
+                return sheet.getBehavior().onStartNestedScroll(coordinatorLayout, sheet, directTargetChild, target, axes, type);
             } else {
-                return false;
+                return false; // super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, axes, type);
             }
         }
 
         @Override
-        public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, DummyView child, View target, int dx, int dy, int[] consumed) {
+        public void onNestedPreScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull DummyView child, @NonNull View target, int dx, int dy, @NonNull int[] consumed, int type) {
+            // super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type);
+
             // When moving the finger up, dy is > 0.
             BottomSheetCoordinatorLayout sheet = (BottomSheetCoordinatorLayout) coordinatorLayout;
             if (shouldForwardEvent(sheet, dy > 0)) {
-                sheet.getBehavior().onNestedPreScroll(coordinatorLayout,
-                        sheet, target, dx, dy, consumed);
+                sheet.getBehavior().onNestedPreScroll(coordinatorLayout, sheet, target, dx, dy, consumed, type);
             }
         }
 
         @Override
-        public void onStopNestedScroll(CoordinatorLayout coordinatorLayout, DummyView child, View target) {
+        public void onStopNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull DummyView child, @NonNull View target, int type) {
+            // super.onStopNestedScroll(coordinatorLayout, child, target, type);
+
             BottomSheetCoordinatorLayout sheet = (BottomSheetCoordinatorLayout) coordinatorLayout;
             if (shouldForwardEvent(sheet, false)) {
-                sheet.getBehavior().onStopNestedScroll(coordinatorLayout, sheet, target);
+                sheet.getBehavior().onStopNestedScroll(coordinatorLayout, sheet, target, type);
             }
         }
 
         @Override
-        public boolean onNestedPreFling(CoordinatorLayout coordinatorLayout, DummyView child, View target, float velocityX, float velocityY) {
+        public boolean onNestedPreFling(@NonNull CoordinatorLayout coordinatorLayout, @NonNull DummyView child, @NonNull View target, float velocityX, float velocityY) {
             BottomSheetCoordinatorLayout sheet = (BottomSheetCoordinatorLayout) coordinatorLayout;
             if (shouldForwardEvent(sheet, velocityY > 0)) {
                 return sheet.getBehavior().onNestedPreFling(coordinatorLayout, sheet, target, velocityX, velocityY);
             } else {
-                return false;
+                return false; // super.onNestedPreFling(coordinatorLayout, child, target, velocityX, velocityY);
             }
         }
     }

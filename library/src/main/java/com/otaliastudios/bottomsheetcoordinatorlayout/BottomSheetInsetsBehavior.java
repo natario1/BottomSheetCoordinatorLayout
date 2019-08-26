@@ -3,16 +3,18 @@ package com.otaliastudios.bottomsheetcoordinatorlayout;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.os.ParcelableCompat;
-import android.support.v4.os.ParcelableCompatCreatorCallbacks;
-import android.support.v4.view.AbsSavedState;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.WindowInsetsCompat;
 import android.util.AttributeSet;
+import android.view.AbsSavedState;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.os.ParcelableCompat;
+import androidx.core.os.ParcelableCompatCreatorCallbacks;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.lang.reflect.Field;
 
@@ -27,7 +29,8 @@ import java.lang.reflect.Field;
 public class BottomSheetInsetsBehavior<V extends View> extends BottomSheetBehavior<V> {
     private final static String TAG = BottomSheetInsetsBehavior.class.getSimpleName();
 
-    public BottomSheetInsetsBehavior() {}
+    public BottomSheetInsetsBehavior() {
+    }
 
     public BottomSheetInsetsBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -35,7 +38,7 @@ public class BottomSheetInsetsBehavior<V extends View> extends BottomSheetBehavi
 
     @NonNull
     @Override
-    public WindowInsetsCompat onApplyWindowInsets(CoordinatorLayout coordinatorLayout, V child, WindowInsetsCompat insets) {
+    public WindowInsetsCompat onApplyWindowInsets(@NonNull CoordinatorLayout coordinatorLayout, @NonNull V child, @NonNull WindowInsetsCompat insets) {
         // Steal the inset and dispatch to view.
         ViewCompat.dispatchApplyWindowInsets(child, insets);
         // Pass unconsumed insets.
