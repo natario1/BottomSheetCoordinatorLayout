@@ -47,7 +47,7 @@ public class BottomSheetCoordinatorBehavior extends BottomSheetInsetsBehavior<Bo
             return super.onTouchEvent(parent, sheet, event);
         }
         updateDirection(event);
-        if (sheet.getState() == BottomSheetCoordinatorBehavior.STATE_EXPANDED && !sheet.canScrollUp() && !fingerDown) {
+        if ((sheet.getState() == BottomSheetCoordinatorBehavior.STATE_HALF_EXPANDED || sheet.getState() == BottomSheetCoordinatorBehavior.STATE_EXPANDED) && !sheet.canScrollUp() && !fingerDown) {
             // Release this. Doesn't work well because BottomSheetBehavior keeps being STATE_DRAGGING
             // even when we reached full height, as long as we keep the finger there.
             return false;
@@ -65,7 +65,7 @@ public class BottomSheetCoordinatorBehavior extends BottomSheetInsetsBehavior<Bo
         }
 
         updateDirection(event);
-        if (sheet.getState() == BottomSheetCoordinatorBehavior.STATE_EXPANDED) {
+        if (sheet.getState() == BottomSheetCoordinatorBehavior.STATE_EXPANDED || sheet.getState() == BottomSheetCoordinatorBehavior.STATE_HALF_EXPANDED) {
             // If finger is going down and
             if (!sheet.canScrollUp()) {
                 if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {

@@ -84,6 +84,7 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements A
         // Fetch our own behavior.
         bottomSheetBehavior = (BottomSheetCoordinatorBehavior) ((LayoutParams) getLayoutParams()).getBehavior();
 
+
         if (delayedBottomSheetCallback != null) {
             bottomSheetBehavior.setBottomSheetCallback(delayedBottomSheetCallback);
             delayedBottomSheetCallback = null;
@@ -125,6 +126,43 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements A
                 }
             });
             hasAppBar = true;
+
+
+            // todo fix me D:
+            //  somehow during expanding from half to expanded state, the appbar has the wrong parallax offset,
+            //  we hammer the expanded state atm, but it's not particular good for performance
+            delayedBottomSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
+                    switch (newState) {
+                        case BottomSheetCoordinatorBehavior.STATE_EXPANDED:
+                            appBarLayout.setExpanded(true, true);
+                            break;
+                        case BottomSheetCoordinatorBehavior.STATE_HALF_EXPANDED:
+                            appBarLayout.setExpanded(true, true);
+                            break;
+                        case BottomSheetCoordinatorBehavior.STATE_COLLAPSED:
+                            appBarLayout.setExpanded(true, false);
+                            break;
+                        case BottomSheetCoordinatorBehavior.STATE_DRAGGING:
+                            appBarLayout.setExpanded(true, false);
+                            break;
+                        case BottomSheetCoordinatorBehavior.STATE_SETTLING:
+                            appBarLayout.setExpanded(true, false);
+                            break;
+                    }
+                }
+
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                    DebugExtensions.log(this, "onSlide slideOffset=" + slideOffset);
+
+                }
+            };
+
+            setBottomSheetCallback(delayedBottomSheetCallback);
+
         } else {
             hasAppBar = false;
         }

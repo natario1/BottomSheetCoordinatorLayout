@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         filterAdapter.registerPresenter(ColumnPresenter())
         filterList.adapter = filterAdapter
 
-        addFilter(5)
+        addFilter(10)
     }
 
     private fun addFilter(amount: Int) {

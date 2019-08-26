@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.otaliastudios.R
 import kotlinx.android.synthetic.main.fragment_map.*
 
 class MapFragment : Fragment() {

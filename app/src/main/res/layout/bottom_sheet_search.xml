@@ -46,11 +46,14 @@
                     android:clipToPadding="false"
                     android:descendantFocusability="afterDescendants"
                     android:nestedScrollingEnabled="false"
+                    android:paddingStart="@dimen/keyline_4"
+                    android:paddingEnd="@dimen/keyline_4"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_collapseMode="parallax"
                     tools:background="@color/md_green_200"
-                    tools:itemCount="1" />
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_column" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
