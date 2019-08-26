@@ -1,0 +1,78 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/search_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:clipToPadding="false"
+        app:behavior_fitToContents="false"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="@dimen/peek_search_height"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <include
+            android:id="@+id/peekLayout"
+            layout="@layout/bottom_sheet_peek_search" />
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/peek_search_height"
+            android:background="?colorSurface"
+            app:elevation="0dp"
+            app:expanded="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:expanded="true">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsingToolbarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?colorSurface"
+                android:minWidth="32dp"
+                android:paddingBottom="@dimen/keyline_4"
+                app:contentScrim="?colorSurface"
+                app:layout_scrollFlags="exitUntilCollapsed|enterAlways|snap|scroll">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/filterList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:descendantFocusability="afterDescendants"
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_collapseMode="none"
+                    tools:background="@color/md_green_200"
+                    tools:itemCount="1" />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/resultsList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?colorSurface"
+            android:clipToPadding="false"
+            android:descendantFocusability="afterDescendants"
+            android:minHeight="100dp"
+            android:nestedScrollingEnabled="true"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:background="@color/md_red_200"
+            tools:itemCount="10" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
