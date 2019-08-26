@@ -4,4 +4,5 @@
     <dimen name="keyline_4">16dp</dimen>
     <dimen name="keyline_5">12dp</dimen>
     <dimen name="keyline_2">2dp</dimen>
+    <dimen name="keyline_1">6dp</dimen>
 </resources>

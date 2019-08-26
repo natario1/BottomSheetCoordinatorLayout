@@ -24,37 +24,36 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
  * Default behavior is {@link BottomSheetCoordinatorBehavior}, Which includes some workarounds
  * for window insets and app bar layout dragging.
  */
-@CoordinatorLayout.DefaultBehavior(BottomSheetCoordinatorBehavior.class)
-public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
-        AppBarLayout.OnOffsetChangedListener {
-
-    private static final String TAG = BottomSheetCoordinatorLayout.class.getSimpleName();
+public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements AppBarLayout.OnOffsetChangedListener, CoordinatorLayout.AttachedBehavior {
 
     private BottomSheetCoordinatorBehavior bottomSheetBehavior;
     private BottomSheetBehavior.BottomSheetCallback delayedBottomSheetCallback;
     private Boolean delayedHideable;
     private Boolean delayedSkipCollapsed;
     private Integer delayedState;
+    private Integer delayedPeekHeight;
+    private Boolean delayedFitToContents;
+    private Integer delayedExpandedOffset;
     private AppBarLayout.Behavior appBarBehavior;
     private int appBarOffset = 0;
     private boolean hasAppBar = false;
 
     public BottomSheetCoordinatorLayout(Context context) {
         super(context);
-        i();
+        init();
     }
 
     public BottomSheetCoordinatorLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        i();
+        init();
     }
 
     public BottomSheetCoordinatorLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        i();
+        init();
     }
 
-    private void i() {
+    private void init() {
         // Add a dummy view that will receive inner touch events.
         View dummyView = new View(getContext());
         DummyBehavior dummyBehavior = new DummyBehavior();
@@ -63,8 +62,7 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
         ViewCompat.setElevation(dummyView, ViewCompat.getElevation(this));
         // Make sure it does not fit windows, or it will consume insets before the AppBarLayout.
         dummyView.setFitsSystemWindows(false);
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.setBehavior(dummyBehavior);
         addView(dummyView, params);
     }
@@ -84,7 +82,8 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
         if (bottomSheetBehavior != null) return;
 
         // Fetch our own behavior.
-        bottomSheetBehavior = BottomSheetCoordinatorBehavior.from(BottomSheetCoordinatorLayout.this);
+        bottomSheetBehavior = (BottomSheetCoordinatorBehavior) ((LayoutParams) getLayoutParams()).getBehavior();
+
         if (delayedBottomSheetCallback != null) {
             bottomSheetBehavior.setBottomSheetCallback(delayedBottomSheetCallback);
             delayedBottomSheetCallback = null;
@@ -96,6 +95,18 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
         if (delayedHideable != null) {
             bottomSheetBehavior.setHideable(delayedHideable);
             delayedHideable = null;
+        }
+        if (delayedPeekHeight != null) {
+            bottomSheetBehavior.setPeekHeight(delayedPeekHeight);
+            delayedPeekHeight = null;
+        }
+        if (delayedFitToContents != null) {
+            bottomSheetBehavior.setFitToContents(delayedFitToContents);
+            delayedFitToContents = null;
+        }
+        if (delayedExpandedOffset != null) {
+            bottomSheetBehavior.setExpandedOffset(delayedExpandedOffset);
+            delayedExpandedOffset = null;
         }
         if (delayedState != null) { // This must be the last.
             bottomSheetBehavior.setState(delayedState);
@@ -173,13 +184,54 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
     }
 
     /**
+     * Set's peek height.
+     *
+     * @param peekHeight Peek Height
+     */
+    public void setPeekHeight(int peekHeight) {
+        if (delayedPeekHeight == null) {
+            delayedPeekHeight = peekHeight;
+        } else {
+            bottomSheetBehavior.setState(peekHeight);
+        }
+    }
+
+    /**
+     * Sets whether the height of the expanded sheet is determined by the height of its contents,
+     * or if it is expanded in two stages (half the height of the parent container,
+     * full height of parent container). Default value is true
+     *
+     * @param fitToContents – whether or not to fit the expanded sheet to its contents.
+     */
+    public void setFitContents(boolean fitToContents) {
+        if (delayedFitToContents == null) {
+            delayedFitToContents = fitToContents;
+        } else {
+            bottomSheetBehavior.setFitToContents(fitToContents);
+        }
+    }
+
+    /**
+     * Determines the top offset of the BottomSheet in the STATE_EXPANDED state when fitsToContent is false. The default value is 0, which results in the sheet matching the parent's top.
+     *
+     * @param offset – an integer value greater than equal to 0, representing the STATE_EXPANDED offset. Value must not exceed the offset in the half expanded state.
+     */
+    public void setExpandedOffset(int offset) {
+        if (delayedExpandedOffset == null) {
+            delayedExpandedOffset = offset;
+        } else {
+            bottomSheetBehavior.setExpandedOffset(offset);
+        }
+    }
+
+    /**
      * Returns our behavior, if available.
      *
      * @return our behavior, or null if not available yet.
      */
     @Nullable
     public BottomSheetBehavior<BottomSheetCoordinatorLayout> getBehavior() {
-        return bottomSheetBehavior;
+        return (BottomSheetCoordinatorBehavior) ((LayoutParams) getLayoutParams()).getBehavior();
     }
 
     /**
@@ -210,15 +262,24 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements
 
     @Override
     public final void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+        DebugExtensions.log(this, "onOffsetChanged=" + verticalOffset);
+
         if (verticalOffset == appBarOffset) {
             // Do nothing
+
+            DebugExtensions.log(this, "onOffsetChanged=" + verticalOffset + " -> do nothing");
+
         } else if (bottomSheetBehavior.getState() != BottomSheetCoordinatorBehavior.STATE_EXPANDED) {
             // We are trying to set a new offset, but it shouldn't change because the sheet
             // is not expanded. Let's get back to old offset.
             appBarBehavior.setTopAndBottomOffset(appBarOffset);
+
+            DebugExtensions.log(this, "onOffsetChanged=" + verticalOffset + " -> appBarOffset=" + appBarOffset);
         } else {
             // we are trying to set a new offset, and sheet is expanded. Keep track of it.
             appBarOffset = verticalOffset;
+            DebugExtensions.log(this, "onOffsetChanged=" + verticalOffset + " = appBarOffset=" + appBarOffset);
         }
     }
 

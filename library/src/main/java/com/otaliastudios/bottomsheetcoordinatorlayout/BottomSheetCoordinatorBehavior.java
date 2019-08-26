@@ -35,7 +35,7 @@ public class BottomSheetCoordinatorBehavior extends BottomSheetInsetsBehavior<Bo
 
     public static BottomSheetCoordinatorBehavior from(BottomSheetCoordinatorLayout view) {
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) view.getLayoutParams();
-        return (BottomSheetCoordinatorBehavior) params.getBehavior();
+        return (BottomSheetCoordinatorBehavior) view.getBehavior();
     }
 
     @Override

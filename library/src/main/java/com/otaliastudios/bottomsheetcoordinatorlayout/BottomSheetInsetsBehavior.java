@@ -27,7 +27,6 @@ import java.lang.reflect.Field;
  */
 // link to bug https://code.google.com/p/android/issues/detail?id=207191&thanks=207191&ts=1460894786
 public class BottomSheetInsetsBehavior<V extends View> extends BottomSheetBehavior<V> {
-    private final static String TAG = BottomSheetInsetsBehavior.class.getSimpleName();
 
     public BottomSheetInsetsBehavior() {
     }
@@ -41,6 +40,7 @@ public class BottomSheetInsetsBehavior<V extends View> extends BottomSheetBehavi
     public WindowInsetsCompat onApplyWindowInsets(@NonNull CoordinatorLayout coordinatorLayout, @NonNull V child, @NonNull WindowInsetsCompat insets) {
         // Steal the inset and dispatch to view.
         ViewCompat.dispatchApplyWindowInsets(child, insets);
+        DebugExtensions.log(this, "onApplyWindowInsets " + insets);
         // Pass unconsumed insets.
         return super.onApplyWindowInsets(coordinatorLayout, child, insets);
     }

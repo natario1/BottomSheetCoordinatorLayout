@@ -1,4 +1,4 @@
-package com.otaliastudios.ui
+package com.otaliastudios
 
 import android.os.Bundle
 import android.view.LayoutInflater
