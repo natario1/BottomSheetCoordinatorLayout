@@ -61,7 +61,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:okhttp3-integration:4.9.0'
     kapt 'com.github.bumptech.glide:compiler:4.9.0'
 
-    implementation 'com.github.kibotu:RecyclerViewPresenter:4.3.4'
+    implementation 'com.github.kibotu:RecyclerViewPresenter:4.4.3'
     implementation 'com.github.kibotu:StreamingAndroidLogger:4.3.8'
 
     implementation project(':library')

@@ -27,7 +27,34 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements AppBarLayout.OnOffsetChangedListener, CoordinatorLayout.AttachedBehavior {
 
     private BottomSheetCoordinatorBehavior bottomSheetBehavior;
+
+    private BottomSheetBehavior.BottomSheetCallback appBarBottomSheetCallback;
+
     private BottomSheetBehavior.BottomSheetCallback delayedBottomSheetCallback;
+
+    private BottomSheetBehavior.BottomSheetCallback bottomSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
+
+        @Override
+        public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
+            if (appBarBottomSheetCallback != null)
+                appBarBottomSheetCallback.onStateChanged(bottomSheet, newState);
+
+            if (delayedBottomSheetCallback != null)
+                delayedBottomSheetCallback.onStateChanged(bottomSheet, newState);
+        }
+
+        @Override
+        public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            if (appBarBottomSheetCallback != null)
+                appBarBottomSheetCallback.onSlide(bottomSheet, slideOffset);
+
+            if (delayedBottomSheetCallback != null)
+                delayedBottomSheetCallback.onSlide(bottomSheet, slideOffset);
+        }
+    };
+
     private Boolean delayedHideable;
     private Boolean delayedSkipCollapsed;
     private Integer delayedState;
@@ -84,11 +111,8 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements A
         // Fetch our own behavior.
         bottomSheetBehavior = (BottomSheetCoordinatorBehavior) ((LayoutParams) getLayoutParams()).getBehavior();
 
+        bottomSheetBehavior.setBottomSheetCallback(bottomSheetCallback);
 
-        if (delayedBottomSheetCallback != null) {
-            bottomSheetBehavior.setBottomSheetCallback(delayedBottomSheetCallback);
-            delayedBottomSheetCallback = null;
-        }
         if (delayedSkipCollapsed != null) {
             bottomSheetBehavior.setSkipCollapsed(delayedSkipCollapsed);
             delayedSkipCollapsed = null;
@@ -131,25 +155,21 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements A
             // todo fix me D:
             //  somehow during expanding from half to expanded state, the appbar has the wrong parallax offset,
             //  we hammer the expanded state atm, but it's not particular good for performance
-            delayedBottomSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
+            appBarBottomSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
                 public void onStateChanged(@NonNull View bottomSheet, int newState) {
 
                     switch (newState) {
                         case BottomSheetCoordinatorBehavior.STATE_EXPANDED:
-                            appBarLayout.setExpanded(true, true);
-                            break;
                         case BottomSheetCoordinatorBehavior.STATE_HALF_EXPANDED:
                             appBarLayout.setExpanded(true, true);
                             break;
                         case BottomSheetCoordinatorBehavior.STATE_COLLAPSED:
-                            appBarLayout.setExpanded(true, false);
-                            break;
                         case BottomSheetCoordinatorBehavior.STATE_DRAGGING:
-                            appBarLayout.setExpanded(true, false);
-                            break;
                         case BottomSheetCoordinatorBehavior.STATE_SETTLING:
                             appBarLayout.setExpanded(true, false);
+                            break;
+                        case BottomSheetBehavior.STATE_HIDDEN:
                             break;
                     }
                 }
@@ -177,8 +197,6 @@ public class BottomSheetCoordinatorLayout extends CoordinatorLayout implements A
     public void setBottomSheetCallback(final BottomSheetBehavior.BottomSheetCallback bottomSheetCallback) {
         if (bottomSheetBehavior == null) {
             delayedBottomSheetCallback = bottomSheetCallback;
-        } else {
-            bottomSheetBehavior.setBottomSheetCallback(bottomSheetCallback);
         }
     }
 
