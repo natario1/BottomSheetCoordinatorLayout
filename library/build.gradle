@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
 
 // Required by bintray
 // archivesBaseName is required if artifactId is different from gradle module name
@@ -28,10 +29,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
-    implementation "com.android.support:design:$supportLibVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation 'com.google.android.material:material:1.1.0-alpha09'
     testImplementation 'junit:junit:4.12'
 }
 
@@ -99,34 +114,32 @@ bintray {
     }
 }
 
-// From official sample https://github.com/bintray/bintray-examples/blob/master/gradle-aar-example/build.gradle
 task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
-    from android.sourceSets.main.java.sourceFiles
 }
 
 task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
+    failOnError false
+    source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    classpath += project.files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar")
-    project.android.libraryVariants.all { variant ->
-        if (variant.name == 'release') {
-            classpath += files(variant.javaCompile.classpath)
-        }
-    }
+    classpath += configurations.compile
+
+
     exclude '**/BuildConfig.java'
     exclude '**/R.java'
     exclude '**/internal/**'
 }
 
+// build a jar with javadoc
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
 
 artifacts {
-    archives javadocJar
     archives sourcesJar
+    archives javadocJar
 }
 
 // export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_101.jdk/Contents/Home

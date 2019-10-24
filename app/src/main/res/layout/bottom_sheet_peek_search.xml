@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/peek_search_height"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    tools:background="@color/md_amber_400">
+
+    <ImageView
+        android:id="@+id/peekShadow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/peek_shadow" />
+
+    <ImageView
+        android:id="@+id/peek"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:tint="?colorSurface"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/peek_background" />
+
+    <ImageView
+        android:id="@+id/search_background"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="@dimen/keyline_4"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="@dimen/keyline_4"
+        app:layout_constraintBottom_toBottomOf="@id/peek"
+        app:layout_constraintEnd_toEndOf="@id/peek"
+        app:layout_constraintStart_toStartOf="@id/peek"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/shape_search_input" />
+
+    <ImageView
+        android:id="@+id/search_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/keyline_5"
+        android:clickable="true"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@id/search_background"
+        app:layout_constraintEnd_toEndOf="@id/search_background"
+        app:layout_constraintTop_toTopOf="@id/search_background"
+        app:srcCompat="@drawable/ic_search" />
+
+    <EditText
+        android:id="@+id/searchQuery"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/keyline_4"
+        android:layout_marginEnd="@dimen/keyline_2"
+        android:background="@android:color/transparent"
+        android:gravity="center_vertical"
+        android:hint="Attraktionen, Shows, etc."
+        android:maxLines="1"
+        android:textAppearance="?textAppearanceSubtitle2"
+        app:layout_constraintBottom_toBottomOf="@id/search_background"
+        app:layout_constraintEnd_toStartOf="@id/search_icon"
+        app:layout_constraintStart_toStartOf="@id/search_background"
+        app:layout_constraintTop_toTopOf="@id/search_background"
+        tools:text="@tools:sample/lorem/random" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

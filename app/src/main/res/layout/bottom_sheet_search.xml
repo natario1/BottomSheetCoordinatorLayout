@@ -1,0 +1,83 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.otaliastudios.bottomsheetcoordinatorlayout.BottomSheetCoordinatorLayout
+        android:id="@+id/search_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:clipToPadding="false"
+        app:behavior_fitToContents="false"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="@dimen/peek_search_height"
+        app:layout_behavior=".bottomsheetcoordinatorlayout.BottomSheetCoordinatorBehavior">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/peek_search_height"
+            android:background="@android:color/transparent"
+            app:elevation="0dp"
+            app:expanded="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:expanded="true">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsingToolbarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:minWidth="32dp"
+                app:contentScrim="@android:color/transparent"
+                app:layout_scrollFlags="exitUntilCollapsed|enterAlways|snap|scroll">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/filterList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?colorSurface"
+                    android:clipToPadding="false"
+                    android:descendantFocusability="afterDescendants"
+                    android:nestedScrollingEnabled="false"
+                    android:paddingStart="@dimen/keyline_4"
+                    android:paddingEnd="@dimen/keyline_4"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_collapseMode="parallax"
+                    tools:background="@color/md_green_200"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_column" />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <include
+            android:id="@+id/peekLayout"
+            layout="@layout/bottom_sheet_peek_search" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/resultsList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?colorSurface"
+            android:clipToPadding="false"
+            android:descendantFocusability="afterDescendants"
+            android:minHeight="100dp"
+            android:nestedScrollingEnabled="true"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:background="@color/md_red_200"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_icon_with_label" />
+
+    </com.otaliastudios.bottomsheetcoordinatorlayout.BottomSheetCoordinatorLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
